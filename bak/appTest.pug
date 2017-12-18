@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    h1= title
+    p 访问次数 #{locals.count}
+    p 姓名 #{name}
+    div app.settings: #{msg}
+    div views: #{views}
+    div test: #{test}

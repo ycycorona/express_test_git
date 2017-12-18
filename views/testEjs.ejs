@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%=title %></title>
+</head>
+<body>
+<h1>ejs</h1>
+<p><%=msg %></p>
+<button type="button" id="sendAjax">jquery获取ajax数据</button>
+<pre id="show-box"></pre>
+<a href="/ajaxApi/getTestDataByJq">下载图片</a>
+<script src="/js/jQuery-2.1.4.min.js"></script>
+<script>
+    $(function () {
+        var ajaxPostData = [{id:1},{id:2}];
+
+        $('#sendAjax').on('click', function() {
+            $.ajax({
+                type: "post",
+                async: true,
+                url: '/ajaxApi/getTestDataByJq?name=ycy',
+                contentType: 'application/json',
+                data: JSON.stringify(ajaxPostData) ,
+                dataType: 'jsonp',
+                jsonp:'callback',
+                success: function (data) {
+                    var finalData = data;
+                    console.log(typeof data, data);
+                    if (typeof data === 'object') {
+                        finalData = JSON.stringify(data, null, 2);
+
+                    }
+                    $('#show-box').text(finalData);
+                },
+                statusCode: {
+                    200: function () {
+                        console.log('200');
+                    }
+                }
+            });
+        })
+
+    })
+</script>
+</body>
+</html>
