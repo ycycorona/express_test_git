@@ -19,17 +19,15 @@
             $.ajax({
                 type: "post",
                 async: true,
-                url: '/ajaxApi/getTestDataByJq?name=ycy',
+                url: '/forwardApi/getFlightInfo',
                 contentType: 'application/json',
                 data: JSON.stringify(ajaxPostData) ,
-                dataType: 'jsonp',
-                jsonp:'callback',
+                dataType: 'json',
                 success: function (data) {
                     var finalData = data;
                     console.log(typeof data, data);
                     if (typeof data === 'object') {
                         finalData = JSON.stringify(data, null, 2);
-
                     }
                     $('#show-box').text(finalData);
                 },

@@ -17,7 +17,7 @@ app.post('/getTestDataByJq', function (req, res, next) {
 
 app.on('mount', function (parent) {
     console.log('ajaxApi Mounted');
-    //console.log(parent);
+
 });
 
 
