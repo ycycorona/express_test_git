@@ -15,6 +15,7 @@ var testTemplate = require('./routes/testTemplate');
 var testEjs = require('./routes/testEjs');
 var ajaxApi = require('./routes/ajaxApi');
 var forwardApi = require('./routes/forwardApi');
+var getCnodejsIndex = require('./routes/getCnodejsIndex');
 
 
 
@@ -50,6 +51,7 @@ app.use('/ajaxApi', ajaxApi);
 //app.use('/test', appTest);
 app.use('/testTemplate', testTemplate);
 app.use('/forwardApi', forwardApi);
+app.use('/getCnodejsIndex', getCnodejsIndex);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
