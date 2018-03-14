@@ -7,13 +7,13 @@ var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
 var DataBase = require('../middleware/dataBase');
-
+var validInsert = 0
 
 var concurrencyCount = 0;
 var allCount = 0;
 var requestUrl = 'http://xxjs.dtdjzx.gov.cn/quiz-api/subject_info/randomList';
 var list =[];
-for(var i=0; i<1; i++) {
+for(var i=0; i<500; i++) {
     list.push({id: i});
 }
 Array.prototype.max = function () {
@@ -34,32 +34,69 @@ app.use(function (req, res, next) {
 
             getOneRequest(requestUrl, callback)
         }, function (err, result) {
+            //console.log(result)
+
             result = result.map(function (oneResult) {
 
                 // 接下来都是 jquery 的用法了
                 //var topicHtml = topicPair[1];
                 return ({
-                    data: JSON.parse(oneResult[1]).data
+                    data: oneResult[1].data
                 });
             });
             var dataBase = new DataBase;
             dataBase.startContect();
+            result.forEach(function(pItem,pIndex,pThisArray){
+                pItem.data.subjectInfoList.forEach(function (item, index, thisArray) {
+                    //console.log(item.subjectTitle);
+                    dataBase.checkValueExist('subject_title', item.subjectTitle)
+                        .then((checkResult) => {
+                            if (!checkResult) {
+                                dataBase.insert({
+                                    subject_title: item.subjectTitle,
+                                    option_a: item.optionInfoList[0].optionTitle,
+                                    option_b: item.optionInfoList[1].optionTitle,
+                                    option_c: item.optionInfoList[2].optionTitle,
+                                    option_d: item.optionInfoList[3].optionTitle,
+                                });
+                                validInsert++;
+                            } else {
+                                //console.log(optionInfoList[0].optionTitle, item.subjectTitle)
+/*                                dataBase.update({
+                                    subject_title: item.subjectTitle,
+                                    option_a: item.optionInfoList[0].optionTitle,
+                                    option_b: item.optionInfoList[1].optionTitle,
+                                    option_c: item.optionInfoList[2].optionTitle,
+                                    option_d: item.optionInfoList[3].optionTitle,
+                                }, item.subjectTitle);*/
+                            }
+                        })
+                        .catch((error) => {
 
-            result[0].data.subjectInfoList.forEach(function (item, index, thisArray) {
-                console.log(item.subjectTitle);
-                dataBase.insert({subject_title: item.subjectTitle});
+                        })
+                        .then(() => {
+                            //console.log('结束');
+                            if((thisArray.length === index+1) && (pThisArray.length === pIndex+1)) {
+                                console.log('next')
+                                next();
+                            }
+
+                        });
+                });
             });
 
-            dataBase.closeContect();
-            res.locals.result = result;
-            next();
+
+
+            //dataBase.closeContect();
+            //res.locals.result = result;
+
         });
     }
 });
 
 //返回数据给浏览器
 app.use(function (req, res, next) {
-    res.send(JSON.stringify(res.locals.result, null, 2) );
+    res.send('操作完成，有效插入：' + validInsert);
 });
 
 
@@ -83,7 +120,7 @@ function getOneRequest(url, callBack) {
 
         }
         concurrencyCount--;
-        callBack(null, [url, body]);
+        callBack(null, [url, JSON.parse(body)]);
 
     });
 

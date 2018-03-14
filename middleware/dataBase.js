@@ -24,12 +24,21 @@ function SqlConnection() {
         });
     };
     SqlConnection.prototype.checkValueExist = function (name, value) {
-        var sql = 'SELECT ? FROM `tbl_question_item` WHERE ? = ?';
+        return new Promise((resolve, reject) => {
+            var sql = 'SELECT ?? FROM `tbl_question_item` WHERE ?? = ?';
+            this.mysqlConnectionApp.query(sql, [name,name,value], function (error, results, fields) {
+                if (error) {
+                    reject(error);
+                }
 
-        this.mysqlConnectionApp.query(sql, [name, name, value], function (error, results, fields) {
-            if (error) throw error;
-            console.log('The solution is: ', results);
-        });
+                //console.log('The solution is: ', JSON.stringify(results) );
+                if (results.length > 0) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            });
+        })
     };
 
     SqlConnection.prototype.insert = function (dataObj) {
@@ -39,11 +48,20 @@ function SqlConnection() {
             console.log('The solution is: ', results);
         })
     }
+
+    SqlConnection.prototype.update = function (dataObj, value) {
+        var sql = 'UPDATE `tbl_question_item` SET ? WHERE `subject_title` = ?';
+        this.mysqlConnectionApp.query(sql, [dataObj, value], function (error, results) {
+            if (error) throw error;
+            console.log('The solution is: ', results);
+        })
+    }
 }
 
-var test = new SqlConnection();
+/*var test = new SqlConnection();
 test.startContect();
-test.checkValueExist({subject_title: 'test'});
-test.closeContect();
+test.update({'subject_title': 'test3'}, 'test2');*/
+
+//test.closeContect();
 
 module.exports = SqlConnection;
