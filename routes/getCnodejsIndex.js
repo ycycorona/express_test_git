@@ -9,7 +9,7 @@ var async = require('async');
 var concurrencyCount = 0;
 //测试一条链接
 app.get('/testOne', function (req, res, next) {
-    var Url = 'https://cnodejs.org/topic/5a376704d1536726354b7e9f';
+    var Url = 'http://xxjs.dtdjzx.gov.cn/quiz-api/subject_info/randomList';
 
     var option = {
         url: Url
@@ -17,13 +17,14 @@ app.get('/testOne', function (req, res, next) {
     request.get(option, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             var topicUrl = Url;
-            var $ = cheerio.load(body);
+/*            var $ = cheerio.load(body);
             var result = {
                 title: $('.topic_full_title').text().trim(),
                 href: topicUrl,
                 comment1: $('.reply_content').eq(0).text().trim()
-            };
-            res.send(JSON.stringify(result, null, 2));
+            };*/
+            //res.send(JSON.stringify(body, null, 2));
+            res.send(body);
         } else {
             res.send('获取失败');
         }

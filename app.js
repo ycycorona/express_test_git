@@ -9,13 +9,14 @@ var bodyParser = require('body-parser');
 //路由
 var index = require('./routes/index');
 var users = require('./routes/users');
-//var test = require('./routes/test');
+var test = require('./routes/test');
 var appTest = require('./routes/appTest');
 var testTemplate = require('./routes/testTemplate');
 var testEjs = require('./routes/testEjs');
 var ajaxApi = require('./routes/ajaxApi');
 var forwardApi = require('./routes/forwardApi');
 var getCnodejsIndex = require('./routes/getCnodejsIndex');
+var getRandomQuesList = require('./routes/getRandomQuesList');
 
 
 
@@ -47,11 +48,12 @@ app.all('*', function (req, res, next) {
 app.use('/', index);
 app.use('/testEjs', testEjs);
 app.use('/ajaxApi', ajaxApi);
-//app.use('/test', test);
+app.use('/test', test);
 //app.use('/test', appTest);
 app.use('/testTemplate', testTemplate);
 app.use('/forwardApi', forwardApi);
 app.use('/getCnodejsIndex', getCnodejsIndex);
+app.use('/getRandomQuesList', getRandomQuesList);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
